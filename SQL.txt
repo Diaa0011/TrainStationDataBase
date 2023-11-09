@@ -229,11 +229,11 @@ VALUES
 
 SELECT * FROM SCHEDULE;
 
-
-
 --------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------
-----Open Slide 15 Lecture 5----
+___________________________________________
+Some Testing
+___________________________________________
 **select s.Route_ID, s.S_ID ,st.S_name
 **from ROUTESTATIONS S ,station st
 **WHERE S.Route_ID = 3 and S.S_ID=st.S_ID;
@@ -241,5 +241,3 @@ SELECT * FROM SCHEDULE;
 **select t.Train_Name, m.Track_id,s.S_name
 **from TRAIN t ,MOVES_ON m ,STATION s
 **where t.Train_ID = m.Train_ID AND m.Track_id = s.Track_ID
-
----unfortunatlity we cannot apply > or < query optimization due to lack of information
