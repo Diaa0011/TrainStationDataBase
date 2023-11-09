@@ -1,0 +1,245 @@
+CREATE TABLE TRACKS(
+	Track_ID varchar(5) unique,
+	No_station int,
+	constraint track_primary_key primary key(Track_ID)
+);
+ALTER TABLE TRACKS
+ALTER COLUMN No_station varchar(50);
+-------------------------
+Data
+-------------------------
+INSERT INTO TRACKS(Track_ID,No_station)
+VALUES
+	(1,'Alexandria-1'),
+	(2,'1-2'),
+	(3,'2-3'),
+	(4,'3-4'),
+	(5,'4-5'),
+	(6,'5-6'),
+	(7,'6-Cario'),
+	(8,'Alexandria-7'),
+	(9,'7-8'),
+	(10,'8-9'),
+	(11,'9-10'),
+	(12,'10-11'),
+	(13,'11-12'),
+	(14,'12-PortSaeed'),
+	(15,'Cario-6'),
+	(16,'4-16'),
+	(17,'16-17'),
+	(18,'17-18'),
+	(19,'18-PortSaeed'),
+	(20,'Cario-6'),
+	(21,'4-19'),
+	(22,'19-20'),
+	(23,'20-21'),
+	(24,'21-22'),
+	(25,'22-PortSaeed');
+--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+CREATE TABLE STATION(
+	S_ID varchar(5) unique,
+	S_name nvarchar(50),
+	Track_ID varchar(5)
+	constraint station_primary_key primary key(S_ID),
+	constraint TrackForStation_Foreign_key foreign key(Track_ID) references Tracks(Track_ID)
+);
+-------------------------
+Data
+-------------------------
+INSERT INTO STATION (S_ID,S_name,Track_ID)
+VALUES 
+	(11,'(1)AlexCairo1',2),
+	(12,'(2)AlexCairo2',3),
+	(13,'(3)AlexCairo3',4),
+	(1344,'(4)AlexPortCairo4',5),
+	(1345,'(5)AlexPortCairo5',6),
+	(1346,'(6)AlexPortCairo6',7),
+	(27,'(7)AlexPort1',9),
+	(28,'(8)AlexPort2',10),
+	(29,'(9)AlexPort3',11),
+	(210,'(10)AlexPort4',12),
+	(211,'(11)AlexPort5',13),
+	(212,'(12)AlexPort6',14),
+	(313,'(13)Cairo13Port1',16),
+	(314,'(14)Cairo13Port2',17),
+	(315,'(15)Cairo13Port3',18),
+	(416,'(16)Cairo16Port1',20),
+	(417,'(17)Cairo16Port2',21),
+	(418,'(18)Cairo16Port3',22),
+	(19,'Alexandria',1),
+	(20,'Alexandria',8),
+	(21,'Cairo',7),
+	(22,'PortSaeed',14),
+	(23,'PortSaeed',18),
+	(24,'PortSaeed',22);
+--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+CREATE TABLE TRAIN(
+	Train_ID varchar(5) unique,
+	Train_Name nvarchar(30),
+	constraint train_primary_key primary key(Train_ID)
+);
+ALTER TABLE TRAIN
+ADD recentTrack varchar(5);
+ALTER TABLE TRAIN
+ADD constraint track_forTrain_fk foreign key(recentTrack) references TRACKS(Track_ID);
+-------------------------
+Data
+-------------------------
+INSERT INTO TRAIN (Train_ID,Train_Name)
+VALUES
+	(11,'AlexandriaCairo'),
+	(-11,'CairoAlexandria'),
+	(22,'AlexandriaPortSaeed'),
+	(-22,'PortSaeedAlexandria'),
+	(33,'Cairo16PortSaeed'),
+	(-33,'PortSaeed16Cairo'),
+	(44,'Cairo13PortSaeed'),
+	(-44,'PortSaeed13Cairo');
+
+--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+SELECT k.Track_id ,n.Train_ID
+INTO MOVES_ON
+FROM TRACKS k, TRAIN n
+
+ALTER TABLE MOVES_ON ADD 
+	constraint track_idformoveson foreign key(track_id) references TRACKS(Track_ID),
+	constraint train_idformoveson foreign key(Train_ID) references TRAIN(Train_ID);
+-------------------------
+Data
+-------------------------
+INSERT INTO MOVES_ON(Train_ID,Track_id)
+VALUES
+		(11,2),
+		(-11,3),
+		(22,10),
+		(-22,13),
+		(33,17),
+		(-33,7),
+		(44,6),
+		(-44,20);
+--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+CREATE TABLE ROUTE(
+	Route_ID varchar(5),
+	startStation varchar(20),
+	endStation varchar(20)
+	constraint route_primary_key primary key(Route_ID),
+);
+-------------------------
+Data
+-------------------------
+INSERT INTO ROUTE(Route_ID,startStation,endStation)
+VALUES 
+		(1,'Alexandria','Cairo'),
+		(2,'Alexandria','PortSaeed'),
+		(3,'Cairo','PortSaeed13'),
+		(4,'Cairo','PortSaeed16');
+--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+SELECT s.S_ID , r.Route_ID
+INTO ROUTESTATIONS
+FROM STATION s , Route r;
+
+ALTER TABLE ROUTESTATIONS ADD 
+	constraint route_idforRstations foreign key(Route_ID) references Route(Route_ID),
+	constraint station_idforRstations foreign key(S_ID) references STATION(S_ID);
+-------------------------
+Data
+-------------------------
+INSERT INTO ROUTESTATIONS(Route_ID,S_ID)
+VALUES 
+		(1,19),
+		(1,11),
+		(1,12),
+		(1,13),
+		(1,13),
+		(1,1344),
+		(1,1345),
+		(1,1346),
+		(1,21),
+		(2,19),
+		(2,27),
+		(2,28),
+		(2,29),
+		(2,210),
+		(2,211),
+		(2,212),
+		(2,22),
+		(3,21),
+		(3,1344),
+		(3,1345),
+		(3,1346),
+		(3,313),
+		(3,314),
+		(3,315),
+		(3,23),
+		(4,21),
+		(4,1344),
+		(4,1345),
+		(4,1346),
+		(4,416),
+		(4,417),
+		(4,418),
+		(4,24);
+--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+CREATE TABLE PASSENGERS(
+	P_ID varchar(5),
+	Gender varchar(1),
+	Seat_No varchar(3),
+	TicketTime datetime,
+	Train_ID varchar(5),
+	constraint passenger_pk primary key(P_ID),
+	constraint trainforPassenger_fk foreign key(Train_ID) references TRAIN(Train_ID)
+);
+-------------------------
+Data
+-------------------------
+INSERT INTO PASSENGERS(P_ID,F_Name,L_Name,Gender,Seat_No,TicketTime,Train_ID)
+VALUES 
+		(159,'Ahmed','Ali','M',20,'2023-8-5 04:30:00',11),
+		(264,'Samer','Ahmed','M',36,'2023-8-7 22:00:00',-33);
+
+--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+CREATE TABLE SCHEDULE
+(
+	Sch_ID varchar(3),
+	StarStation varchar(50),
+	EndStation varchar(50),
+	StarTime time,
+	EndTime time,
+	R_ID varchar(5),
+	Train_ID varchar(5),
+	constraint schedule_pk primary key(Sch_ID),
+	constraint trainforSchedule_fk foreign key(Train_ID) references TRAIN(Train_ID),
+	constraint routeforSchedule_fk foreign key(R_ID) references Route(Route_ID)
+);
+-------------------------
+Data
+-------------------------
+INSERT INTO SCHEDULE(Sch_ID,StarStation,EndStation,StarTime,EndTime,R_ID,Train_ID)
+VALUES 
+	(1,'Alexandira','Cairo','04:00:00','07:00:00',1,11),
+	(2,'Alexandira','PortSaeed','10:00:00','2:00:00',2,22),
+	(3,'Cairo','Alexandira','08:00:00','11:00:00',1,-11);
+
+SELECT * FROM SCHEDULE;
+
+
+
+--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+----Open Slide 15 Lecture 5----
+**select s.Route_ID, s.S_ID ,st.S_name
+**from ROUTESTATIONS S ,station st
+**WHERE S.Route_ID = 3 and S.S_ID=st.S_ID;
+
+**select t.Train_Name, m.Track_id,s.S_name
+**from TRAIN t ,MOVES_ON m ,STATION s
+**where t.Train_ID = m.Train_ID AND m.Track_id = s.Track_ID
+
+---unfortunatlity we cannot apply > or < query optimization due to lack of information
